@@ -3,6 +3,15 @@ git-flow
 
 Some automated tools for use in order to achieve company's git-flow
 
+## Installation
+
+1. Make Git is installed.
+2. Clone the repo into custom folder.
+3. Run `./install.sh` inside the clonned repo.
+
+>  Profit!
+
+
 ## Version bump
 
 Version bump is automated version bumping tool for dependency and optional linking new version to product that using it.
