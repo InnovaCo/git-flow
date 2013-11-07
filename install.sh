@@ -1,6 +1,8 @@
 #!/bin/bash
 
-git config --global alias.bump "!$PWD/version-bump.sh"
+DIR="$( cd "$( dirname "$0" )" && pwd )"
+
+git config --global alias.bump "!$DIR/version-bump.sh"
 
 cat << __EOF
 Git aliases successfully installed.
