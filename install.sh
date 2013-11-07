@@ -2,7 +2,7 @@
 
 git config --global alias.bump "!$PWD/version-bump.sh"
 
-cat << __OEF
+cat << __EOF
 Git aliases successfully installed.
 
 __EOF
