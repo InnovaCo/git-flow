@@ -20,7 +20,7 @@ Usage: `git bump [-m %message%] [%path_to_dep%]`
 
  `git bump` ensures that you are running it inside "master" branch of your library and makes sure that it's up to date. After that it makes a dry-run push and notifies you about troubles if any.
 
-If %path_to_dep% is specified then tool assumes that this is a path to repo for a product that depends on your library. It tries to find "bower.json" and write down new version of the library into it.
+If %path_to_dep% is specified then tool assumes that this is a path to local repository for a product that depends on your library. It tries to find "bower.json" and write down new version of the library into it.
 
 If everything is okay the tool changes dependency version to the new one and commit changes with message provided with "-m" key of the command or last message used to commit changes for the library and pushes this changes to the origin.
 
