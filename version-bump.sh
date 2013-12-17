@@ -1,12 +1,19 @@
 #!/bin/bash
 
+function print_help {
+	echo ""
+	echo "Usage: bump-version.sh [-m %message%] [%path_to_dependant%]"
+	echo ""
+	echo "Example: ~/dev/awesome-library\$ bump-version.sh -m \"Version bump.\" ../awesome-product/"
+}
+
 case $1 in
 	"-m" )
 		commit="$2"
 		path_to_dep="$3"
 		;;
 	"--help" | "--?" )
-		echo "Usage: bump-version.sh [-m %message%] [%path_to_dep%]"
+		print_help
 		exit 0
 		;;
 	* )
@@ -27,6 +34,7 @@ function check_dependency {
 
 	if [ ! -f "bower.json" ]; then
 		echo -e "\033[0;31mbower.json for dependency $dep can not be found.\033[0m"
+		print_help
 		exit 2
 	fi
 
@@ -34,6 +42,7 @@ function check_dependency {
 
 	if [[ -z "$dependency_name" || "$dependency_name" = "$component_name" ]]; then
 		echo -e "\033[0;31mWrong dependency name '$dependency_name'\033[0m"
+		print_help
 		exit 2
 	fi
 
@@ -41,6 +50,7 @@ function check_dependency {
 
 	if [ -z "$git_status" ]; then
 		echo -e "\033[0;31mDependency working directory '$dep' is not clean. Rest ot clean it up and try again.\033[0m"
+		print_help
 		exit 2
 	fi
 
@@ -50,7 +60,7 @@ function check_dependency {
 branch_name=`git branch | grep -e '^*' | sed -e 's/* //g'`
 
 if [ "$branch_name" != "master" ]; then
-	echo -e "\033[0;33mCheckout to master branch ot git repository.\033[0m"
+	echo -e "\033[0;33mPlease, checkout to master branch.\033[0m"
 	exit 0
 fi
 
@@ -65,10 +75,10 @@ case $branch_status in
 		;;
 esac
 
-git push origin --dry-run 2>/dev/null
+git push origin master --dry-run 2>/dev/null
 
 if [ $? -ne 0 ]; then
-	echo -e "\033[0;33mCan't push your changes to the remote.\033[0m"
+	echo -e "\033[0;33mCan't push your 'master' changes to the remote.\033[0m"
 	exit 1;
 fi
 
@@ -107,7 +117,7 @@ fi
 if [[ $tag_sha != $head_sha ]]; then
 	git tag -a $component_version -m "Version bump $component_version" HEAD
 
-	git push origin
+	git push origin master
 	git push origin --tags
 
 	echo -e "\033[0;32mDone.\033[0m New version: \033[0;33m$component_version\033[0m"
@@ -135,7 +145,9 @@ if [ $? -ne 0 ]; then
 	exit 3
 fi
 
-git push origin
+branch_name=`git branch | grep -e '^*' | sed -e 's/* //g'`
+
+git push origin $branch_name
 
 echo -e "\033[0;32mDone!\033[0m — we have a script for that."
 
