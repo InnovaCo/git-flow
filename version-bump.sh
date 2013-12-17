@@ -46,10 +46,10 @@ function check_dependency {
 		exit 2
 	fi
 
-	git_status=$(git status | grep "nothing to commit, working directory clean")
+	git_status=$(git status | grep -E -e "nothing to commit\W+working directory clean")
 
 	if [ -z "$git_status" ]; then
-		echo -e "\033[0;31mDependency working directory '$dep' is not clean. Rest ot clean it up and try again.\033[0m"
+		echo -e "\033[0;31mDependency working directory '$dep' is not clean. Clean it up and try again.\033[0m"
 		print_help
 		exit 2
 	fi
