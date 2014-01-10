@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 function print_help {
 	echo ""
@@ -110,7 +111,7 @@ fi
 
 component_version="v$component_version"
 
-if [ -z $commit ]; then
+if [ -z "$commit" ]; then
 	commit=$(git log -1 | grep -v -E "^(commit |Author:|Date:|\s*$)" | sed -E "s/^[ ]+//g")
 fi
 
