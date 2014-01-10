@@ -58,10 +58,14 @@ function check_dependency {
 	cd $cwd
 }
 
+print_repo {
+	git config --get remote.origin.url | sed -E 's/^(.+\:\/\/[^\/]+\/|[^\/]+\:)//g'
+}
+
 branch_name=`git branch | grep -e '^*' | sed -e 's/* //g'`
 
 if [ "$branch_name" != "master" ]; then
-	echo -e "\033[0;33mPlease, checkout to master branch.\033[0m"
+	echo -e "\033[0;33m$(print_repo) > Please, checkout to master branch.\033[0m"
 	exit 0
 fi
 
@@ -71,7 +75,7 @@ case $branch_status in
 	'fast-forwardable' | 'up to date' )
 		;;
 	* )
-		echo -e "\033[0;33mYour branch is not up to date.\033[0m"
+		echo -e "\033[0;33m$(print_repo) > Your branch is not up to date.\033[0m"
 		exit 1
 		;;
 esac
@@ -79,7 +83,7 @@ esac
 git push origin master --dry-run 2>/dev/null
 
 if [ $? -ne 0 ]; then
-	echo -e "\033[0;33mCan't push your 'master' changes to the remote.\033[0m"
+	echo -e "\033[0;33m$(print_repo) > Can't push your 'master' changes to the remote.\033[0m"
 	exit 1;
 fi
 
@@ -121,7 +125,7 @@ if [[ $tag_sha != $head_sha ]]; then
 	git push origin master
 	git push origin --tags
 
-	echo -e "\033[0;32mDone.\033[0m New version: \033[0;33m$component_version\033[0m"
+	echo -e "\033[0;32m$(print_repo) > Done.\033[0m New version: \033[0;33m$component_version\033[0m"
 fi
 
 echo -e "\033[0;34mLinking $component_name $component_version to $path_to_dep\033[0m"
@@ -142,7 +146,7 @@ git add "bower.json"
 git commit -m "$commit"
 
 if [ $? -ne 0 ]; then
-	echo -e "\033[0;31mCommit unsuccessful.\033[0m"
+	echo -e "\033[0;31m$(print_repo) > Commit unsuccessful.\033[0m"
 	exit 3
 fi
 
