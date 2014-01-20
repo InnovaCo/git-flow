@@ -58,7 +58,7 @@ function check_dependency {
 	cd $cwd
 }
 
-print_repo {
+function print_repo {
 	git config --get remote.origin.url | sed -E 's/^(.+\:\/\/[^\/]+\/|[^\/]+\:)//g'
 }
 
