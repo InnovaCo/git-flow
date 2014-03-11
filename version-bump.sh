@@ -128,11 +128,13 @@ if [[ $tag_sha != $head_sha ]]; then
 	echo -e "\033[0;32m$(print_repo) > Done.\033[0m New version: \033[0;33m$component_version\033[0m"
 fi
 
-echo -e "\033[0;34mLinking $component_name $component_version to $path_to_dep\033[0m"
-
 if [ -z $path_to_dep ]; then
 	exit 0
 fi
+
+[ -n "$(which chewer)" ] && chewer link
+
+echo -e "\033[0;34mLinking $component_name $component_version to $path_to_dep\033[0m"
 
 check_dependency $component_name $path_to_dep
 
@@ -141,6 +143,8 @@ cd $path_to_dep
 cat "bower.json" | sed -E "s/(\"$component_name\"\s*:.+#).+\"/\1$component_version\"/g" > bower.json.tmp
 rm bower.json
 mv bower.json.tmp bower.json
+
+[ -n "$(which chewer)" ] && chewer link $component_name
 
 git add "bower.json"
 git commit -m "$commit"
