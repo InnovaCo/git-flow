@@ -10,7 +10,7 @@ function print_help {
 
 case $1 in
 	"-m" )
-		commit="$2"
+		commit_message="$2"
 		path_to_dep="$3"
 		;;
 	"--help" | "--?" )
@@ -115,9 +115,15 @@ fi
 
 component_version="v$component_version"
 
-if [ -z "$commit" ]; then
-	commit=$(git log -1 | grep -v -E "^(commit |Author:|Date:|\s*$)" | sed -E "s/^[ ]+//g")
+last_commit_message=$(git log -1 | grep -v -E "^(commit |Author:|Date:|\s*$)" | sed -E "s/^[ ]+//g")
+
+if [ -z "$commit_message" ]; then
+	commit_message="$last_commit_message"
+else
+	commit_message=$(echo -e "$commit_message\n$last_commit_message")
 fi
+
+commit_message=$(echo "$commit_message" | sed -E "s/{version}/$component_version/;s/^Merge.+$//g")
 
 if [[ $tag_sha != $head_sha ]]; then
 	git tag -a $component_version -m "Version bump $component_version" HEAD
@@ -147,7 +153,7 @@ mv bower.json.tmp bower.json
 [ -n "$(which chewer)" ] && chewer link $component_name
 
 git add "bower.json"
-git commit -m "$commit"
+git commit -m "$commit_message"
 
 if [ $? -ne 0 ]; then
 	echo -e "\033[0;31m$(print_repo) > Commit unsuccessful.\033[0m"
