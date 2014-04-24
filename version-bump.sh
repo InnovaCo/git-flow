@@ -8,19 +8,26 @@ function print_help {
 	echo "Example: ~/dev/awesome-library\$ bump-version.sh -m \"Version bump.\" ../awesome-product/"
 }
 
+while test $# -gt 0; do
 case $1 in
 	"-m" )
 		commit_message="$2"
-		path_to_dep="$3"
-		;;
+		shift 2
+	;;
+	"--no-push" )
+		no_push="y"
+		shift
+	;;
 	"--help" | "--?" )
 		print_help
 		exit 0
-		;;
+	;;
 	* )
 		path_to_dep="$1"
-		;;
+		shift
+	;;
 esac
+done
 
 function check_dependency {
 	cwd=$(pwd)
@@ -105,7 +112,7 @@ patch_version=$(echo $last_version | sed -E $patch_pattern)
 tag_sha=$(git rev-list $last_version -1)
 head_sha=$(git rev-list HEAD -1)
 
-if [[ "$component_version" < "$last_version" ]]; then
+if [[ "v$component_version" < "$last_version" ]]; then
 	if [[ $tag_sha != $head_sha ]]; then
 		patch_version=$(($patch_version + 1))
 	fi
@@ -162,9 +169,6 @@ fi
 
 branch_name=`git branch | grep -e '^*' | sed -e 's/* //g'`
 
-git push origin $branch_name
+[ -z "$no_push" ] && git push origin $branch_name
 
 echo -e "\033[0;32mDone!\033[0m — we have a script for that."
-
-
-
