@@ -11,6 +11,18 @@ Some automated tools for use in order to achieve company's git-flow
 
 >  Profit!
 
+## Go pipeline trigger
+
+`git go` command will automatically send request to schedule Go pipeline for your repo.
+
+Go pipelines has to be conformed to `github-to-go-hooks` integration (Innova term).
+
+The `.go` file inside repo root has to define some variables:
+
+```
+pipeline={go pipeline name}
+host={host[:port] for your Go deployment}
+```
 
 ## Version bump
 
