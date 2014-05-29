@@ -4,7 +4,9 @@ set -e
 branch=`git branch | grep -e '^*' | sed -e 's/* //g'`
 sha=$(git rev-list HEAD -1)
 
-source .go # import $pipeline, $host variables
+repo=$(git rev-parse --show-toplevel)
+
+source $repo/.go # import $pipeline, $host variables
 
 [ -z "$pipeline" -o -z "$host" -o -z "$branch" -o -z "$sha" ] && echo "Insufficient variables for call" && exit 1
 
